@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <title>For You ❤️</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&family=Great+Vibes&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&family=Great+Vibes&display=swap" rel="stylesheet">
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -17,171 +17,264 @@ body{
   color:white;
 }
 
-/* background cinematic */
+/* ===== GATE ===== */
+#gate{
+  position:fixed;
+  width:100%;
+  height:100%;
+  background:radial-gradient(circle,#111,#000);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+  text-align:center;
+}
+
+#gate h1{
+  font-size:22px;
+  margin-bottom:8px;
+}
+
+#gate p{
+  font-size:14px;
+  opacity:0.8;
+  margin-bottom:18px;
+}
+
+#gate button{
+  padding:12px 25px;
+  border:none;
+  border-radius:12px;
+  background:#ff4b5c;
+  color:white;
+  font-size:15px;
+  cursor:pointer;
+  box-shadow:0 0 25px #ff4b5c;
+  transition:0.3s;
+}
+
+/* ===== BACKGROUND CINEMATIC HD LOOK ===== */
 .bg{
   position:fixed;
   width:100%;
   height:100%;
-  background:url("foto1.jpg.jpeg") center/cover no-repeat;
-  filter:blur(25px) brightness(0.5);
-  transition:1s;
+  background:center/cover no-repeat;
+  filter:brightness(0.7) contrast(1.2) saturate(1.25);
+  transform:scale(1.08);
+  transition:1s ease;
 }
 
-/* container center */
-.container{
+/* vignette + film look */
+body::after{
+  content:"";
+  position:fixed;
+  width:100%;
+  height:100%;
+  top:0;
+  left:0;
+  pointer-events:none;
+  background:radial-gradient(circle,transparent 55%,rgba(0,0,0,0.75));
+}
+
+/* slight film grain */
+body::before{
+  content:"";
+  position:fixed;
+  width:100%;
+  height:100%;
+  top:0;
+  left:0;
+  pointer-events:none;
+  opacity:0.05;
+  background-image:url("https://grainy-gradients.vercel.app/noise.svg");
+}
+
+/* ===== SCENE ===== */
+.scene{
   position:absolute;
   top:50%;
   left:50%;
   transform:translate(-50%,-50%);
   text-align:center;
+  width:90%;
   z-index:2;
 }
 
-/* foto utama */
-#slide{
-  width:260px;
-  height:340px;
+/* FOTO (HD LOOK ENHANCER) */
+#photo{
+  width:270px;
+  height:360px;
   object-fit:cover;
   border-radius:20px;
-  box-shadow:0 0 40px rgba(255,255,255,0.6);
-  transition:opacity 1s ease, transform 2s ease;
+
+  /* 🔥 cinematic sharp look */
+  filter:contrast(1.15) saturate(1.2) brightness(1.05);
+  box-shadow:0 0 60px rgba(0,0,0,0.6);
+
+  opacity:0;
+  transform:scale(1.08);
+  transition:1.2s ease;
 }
 
-/* zoom effect */
-.zoom{
-  transform:scale(1.1);
-}
-
-/* title */
+/* TITLE */
 .title{
   font-family:'Great Vibes',cursive;
-  font-size:40px;
-  text-shadow:0 0 10px #fff,0 0 20px #ff4b5c;
-  margin-bottom:10px;
+  font-size:44px;
+  margin-bottom:8px;
+  text-shadow:0 0 15px rgba(255,255,255,0.6);
 }
 
-/* typing text */
-.text{
-  font-size:17px;
-  max-width:300px;
-  margin:10px auto;
-  min-height:60px;
+/* TEXT (RAPI + CINEMATIC SUBTITLE STYLE) */
+#text{
+  margin-top:8px;
+  font-size:15px;
+  max-width:340px;
+  margin-left:auto;
+  margin-right:auto;
+  line-height:1.35;
+  letter-spacing:0.2px;
+  opacity:0.95;
 }
 
-/* hearts */
+/* HEART */
 .heart{
   position:absolute;
   color:red;
-  font-size:18px;
-  animation:float 6s linear infinite;
+  animation:float 6s linear forwards;
 }
 
 @keyframes float{
-  0%{transform:translateY(100vh);}
+  0%{transform:translateY(100vh);opacity:1;}
   100%{transform:translateY(-10vh);opacity:0;}
+}
+
+/* fade effect */
+.fade{
+  opacity:0 !important;
+  transform:scale(1.15) !important;
 }
 </style>
 </head>
 
-<body onclick="playMusic()">
+<body>
+
+<!-- GATE -->
+<div id="gate">
+  <h1>Jangan di skip ya ❤️</h1>
+  <p>Klik untuk mulai cerita ini</p>
+  <button onclick="start()">KLIK 💖</button>
+</div>
+
+<!-- AUDIO -->
+<audio id="music" loop preload="auto">
+  <source src="Audio.mp3" type="audio/mpeg">
+</audio>
 
 <div class="bg" id="bg"></div>
 
-<!-- AUDIO TANPA DOWNLOAD -->
-<audio id="music" autoplay loop playsinline>
-  <source src="https://cdn.pixabay.com/download/audio/2023/03/28/audio_5c9b5bb0e3.mp3">
-</audio>
-
-<div class="container">
+<div class="scene">
   <div class="title">Selamat Ulang Tahun 🎉</div>
-
-  <img id="slide" src="foto1.jpg.jpeg">
-
-  <div class="text" id="typing"></div>
+  <img id="photo">
+  <div id="text"></div>
 </div>
 
 <script>
 
-/* ================= FOTO SLIDE ================= */
-let images = [
-"foto1.jpg.jpeg","foto2.jpg.jpeg","foto3.jpg.jpeg","foto4.jpg.jpeg","foto5.jpg.jpeg",
-"foto6.jpg.jpeg","foto7.jpg.jpeg","foto8.jpg.jpeg","foto9.jpg.jpeg","foto10.jpg.jpeg",
-"foto11.jpg.jpeg","foto12.jpg.jpeg","foto13.jpg.jpeg","foto14.jpg.jpeg","foto15.jpg.jpeg"
+/* ===== START ===== */
+function start(){
+  document.getElementById("gate").style.display="none";
+
+  let music=document.getElementById("music");
+  music.volume=0.8;
+  music.play().catch(()=>{});
+
+  story();
+  hearts();
+}
+
+/* ===== STORY MODE CINEMATIC ===== */
+let scenes=[
+{img:"foto1.jpg.jpeg",text:"Hari ini bukan hari biasa… ini tentang kamu 💖"},
+{img:"foto2.jpg.jpeg",text:"Aku masih ingat semua awalnya…"},
+{img:"foto3.jpg.jpeg",text:"Dan sejak itu… semuanya berubah ✨"},
+{img:"foto4.jpg.jpeg",text:"Kamu jadi alasan aku tersenyum 💕"},
+{img:"foto5.jpg.jpeg",text:"Aku selalu berharap kamu bahagia 💘"},
+{img:"foto6.jpg.jpeg",text:"Terima kasih sudah ada ❤️"},
+{img:"foto7.jpg.jpeg",text:"Aku bangga sama kamu 💖"},
+{img:"foto8.jpg.jpeg",text:"Kalau dunia berat… aku di sini 💔"},
+{img:"foto9.jpg.jpeg",text:"Dan sekarang…"},
+{img:"foto10.jpg.jpeg",text:"Aku cuma mau bilang…"},
+{img:"foto11.jpg.jpeg",text:"Aku sayang kamu ❤️"},
+{img:"foto12.jpg.jpeg",text:"Selalu."},
+{img:"foto13.jpg.jpeg",text:"Dan akan terus begitu."},
+{img:"foto14.jpg.jpeg",text:"Selamat ulang tahun 💖"},
+{img:"foto15.jpg.jpeg",text:"THE END… tapi rasa ini nggak pernah selesai"}
 ];
 
-let i = 0;
+let i=0;
 
-setInterval(()=>{
-  i = (i+1) % images.length;
+function story(){
 
-  let slide = document.getElementById("slide");
+  let photo=document.getElementById("photo");
+  let text=document.getElementById("text");
+  let bg=document.getElementById("bg");
 
-  slide.style.opacity = 0;
+  function next(){
 
-  setTimeout(()=>{
-    slide.src = images[i];
-    slide.style.opacity = 1;
-    slide.classList.toggle("zoom");
-  },400);
+    if(i>=scenes.length){
+      text.innerHTML="❤️ Terima kasih sudah melihat semuanya";
+      return;
+    }
 
-  document.getElementById("bg").style.backgroundImage = "url("+images[i]+")";
+    let s=scenes[i];
 
-},3500);
+    photo.classList.add("fade");
 
+    setTimeout(()=>{
+      photo.src=s.img;
+      bg.style.backgroundImage="url("+s.img+")";
+      photo.classList.remove("fade");
 
-/* ================= TYPING TEXT ================= */
-let messages = [
-"🎉 Selamat Ulang Tahun 🎉",
-"Nazlah Sakinah A ❤️",
-"Hari ini adalah hari spesial, karena kamu hadir di dunia ini 💕",
-"Terima kasih sudah menjadi alasan aku tersenyum setiap hari ✨",
-"Kamu adalah seseorang yang sangat berarti dalam hidupku 💖",
-"Aku berharap kamu selalu sehat, bahagia, dan semua impianmu tercapai 💫",
-"Aku akan selalu ada untukmu, dalam keadaan apapun 💘",
-"Aku sayang kamu, hari ini, besok, dan selamanya ❤️"
-];
+      typeText(s.text,text);
+      i++;
 
-let msgIndex = 0;
-let charIndex = 0;
+      setTimeout(next,3400);
 
-function typeText(){
-  if(msgIndex < messages.length){
-    let el = document.getElementById("typing");
+    },500);
+  }
 
-    if(charIndex < messages[msgIndex].length){
-      el.innerHTML += messages[msgIndex].charAt(charIndex);
-      charIndex++;
-      setTimeout(typeText,40);
-    }else{
-      setTimeout(()=>{
-        el.innerHTML="";
-        charIndex=0;
-        msgIndex++;
-        typeText();
-      },2200);
+  next();
+}
+
+/* ===== TYPE EFFECT (CINEMATIC SUBTITLE) ===== */
+function typeText(msg,el){
+  el.innerHTML="";
+  let i=0;
+
+  function run(){
+    if(i<msg.length){
+      el.innerHTML+=msg.charAt(i);
+      i++;
+      setTimeout(run,28);
     }
   }
-}
-typeText();
 
-
-/* ================= AUDIO FIX ================= */
-function playMusic(){
-  let music = document.getElementById("music");
-  music.play();
+  run();
 }
 
-
-/* ================= HEART ================= */
-for(let j=0;j<80;j++){
-  setTimeout(()=>{
-    let h=document.createElement("div");
-    h.className="heart";
-    h.innerHTML="❤️";
-    h.style.left=Math.random()*100+"vw";
-    document.body.appendChild(h);
-    setTimeout(()=>h.remove(),6000);
-  },j*120);
+/* ===== HEARTS ===== */
+function hearts(){
+  for(let j=0;j<90;j++){
+    setTimeout(()=>{
+      let h=document.createElement("div");
+      h.className="heart";
+      h.innerHTML="❤️";
+      h.style.left=Math.random()*100+"vw";
+      document.body.appendChild(h);
+      setTimeout(()=>h.remove(),6000);
+    },j*100);
+  }
 }
 
 </script>
